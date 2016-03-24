@@ -1,5 +1,6 @@
 ssl_certs_path: /etc/ssl
 ssl_certs_path_owner: root
-ssl_certs_path_group: enabled
+ssl_certs_path_group: root
 service_name: apache2
-ssl_folder: 
+ssl_folder: /etc/ssl
+ssl_certs_mode: enabled 
