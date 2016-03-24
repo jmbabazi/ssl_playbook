@@ -26,30 +26,37 @@
  # Backup the existing ssl certificate folder
   - name: make backup directory
     file: dest=/etc/ssl/ssl_backup state=directory owner=root
+    tags: ssl-certs
 
   - name: stat certs
     stat: path=/etc/ssl/certs
     register: cert_stat
+    tags: ssl-certs
 
   - name: Move certs to ssl_backup
     command: mv /etc/ssl/certs /etc/ssl/ssl_backup
     when: cert_stat.stat.exists
+    tags: ssl-certs
    
   - name: stat private
     stat: path=/etc/ssl/private
     register: private_stat
+    tags: ssl-certs
 
   - name: Move private to ssl_backup
     command: mv /etc/ssl/private /etc/ssl/ssl_backup
     when: private_stat.stat.exists
+    tags: ssl-certs
 
   - name: stat certs
     stat: path=/etc/ssl/openssl.cnf
     register: openssl_cnf_stat
+    tags: ssl-certs
 
   - name: Move openssl.cnf to ssl_backup
     command: mv /etc/ssl/openssl.cnf /etc/ssl/ssl_backup
     when: openssl_cnf_stat.stat.exists
+    tags: ssl-certs
 
  # - name: copy ssl conf file
  #   template:
