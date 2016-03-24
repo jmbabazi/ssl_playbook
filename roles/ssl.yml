@@ -1,7 +1,7 @@
 ---
-- hosts: "{{target}}"
+- hosts: target
   sudo: yes
-  vars_file:
+  vars_files:
       - ../group_vars/local
   
   tasks:
@@ -11,7 +11,6 @@
       state: directory
       owner: "{{ ssl_certs_path_owner }}"
       group: "{{ ssl_certs_path_group }}"
-      mode: "{{ ssl_certs_mode }}"
     tags: ssl-certs
 
   - name: Check if Apache2 service exists
@@ -26,11 +25,31 @@
  
  # Backup the existing ssl certificate folder
   - name: make backup directory
-    file: dest=/home/ssl/ssl_backup state=directory owner=root
+    file: dest=/etc/ssl/ssl_backup state=directory owner=root
 
-  - name: mv * in ssl folder tp ssl_backup
-    command: mv /etc/ssl/* /etc/ssl/ssl_backup
-    ignore_errors: true
+  - name: stat certs
+    stat: path=/etc/ssl/certs
+    register: cert_stat
+
+  - name: Move certs to ssl_backup
+    command: mv /etc/ssl/certs /etc/ssl/ssl_backup
+    when: cert_stat.stat.exists
+   
+  - name: stat private
+    stat: path=/etc/ssl/private
+    register: private_stat
+
+  - name: Move private to ssl_backup
+    command: mv /etc/ssl/private /etc/ssl/ssl_backup
+    when: private_stat.stat.exists
+
+  - name: stat certs
+    stat: path=/etc/ssl/openssl.cnf
+    register: openssl_cnf_stat
+
+  - name: Move openssl.cnf to ssl_backup
+    command: mv /etc/ssl/openssl.cnf /etc/ssl/ssl_backup
+    when: openssl_cnf_stat.stat.exists
 
  # - name: copy ssl conf file
  #   template:
