@@ -1,0 +1,5 @@
+apt-get install sshpass
+
+Command to run the playbook:
+cd $PWD/ssl_playbook
+ansible-playbook --ask-pass --user=<remote_username> -i hosts -vvv roles/ssl.yml -K
