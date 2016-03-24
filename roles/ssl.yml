@@ -2,22 +2,31 @@
 - hosts: "{{target}}"
   sudo: yes
   vars_file:
-      - ../deploy-production/group_vars/production
+      - ../group_vars/local
   
   tasks:
+  - name: Ensure ssl folder exist
+    file:
+      path: "{{ ssl_certs_path }}"
+      state: directory
+      owner: "{{ ssl_certs_path_owner }}"
+      group: "{{ ssl_certs_path_group }}"
+      mode: "{{ ssl_certs_mode }}"
+    tags: ssl-certs
+
   - name: Check if Apache2 service exists
-    stat: path=/etc/init.d/{{service_name_http}}
+    stat: path=/etc/init.d/{{service_name}}
     register: service_status
-    tags: ssl
+    tags: ssl-certs
 
   - name: Stop Apache2 service if exists
-    service: name={{service_name_http}} state=stopped
+    service: name={{service_name}} state=stopped
     when: service_status.stat.exists
-    tags: ssl
+    tags: ssl-certs
  
  # Backup the existing ssl certificate folder
   - name: make backup directory
-    file: dest=/home/ssh/ssl_backup state=directory owner=root
+    file: dest=/home/ssl/ssl_backup state=directory owner=root
 
   - name: mv * in ssl folder tp ssl_backup
     command: mv /etc/ssl/* /etc/ssl/ssl_backup
@@ -37,9 +46,9 @@
   
   
   - name: Extract tar
-    unarchive: src={{file_folder}}/ssl-certs.tar dest=/etc/ssl
-    tags:  ssl
+    unarchive: src={{ssl_folder}}/ssl-certs.tar dest=/etc/ssl
+    tags:  ssl-certs
 
   - name: Start Apache2
-    service: name={{service_name_http}} state=started enabled=yes
-    tags: ssl
+    service: name={{service_name}} state=started enabled=yes
+    tags: ssl-certs
