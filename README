@@ -1,5 +1,6 @@
-apt-get install sshpass
+On your local machine install ssh pass -- apt-get install sshpass
 
 Command to run the playbook:
-cd $PWD/ssl_playbook
-ansible-playbook --ask-pass --user=<remote_username> -i hosts -vvv roles/ssl.yml -K
+1) cd $PWD/ssl_playbook
+2) Edit the hosts file and insert the IP address (or URL) of the machines you want to configure.
+3) ansible-playbook --ask-pass --user=<remote_server_username> -i hosts -vvv roles/ssl.yml -K
