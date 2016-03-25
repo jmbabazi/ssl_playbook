@@ -24,7 +24,7 @@
     tags: ssl-certs
  
  # Backup the existing ssl certificate folder
-  - name: make backup directory
+  - name: Create backup directory
     file: dest=/etc/ssl/ssl_backup state=directory owner=root
     tags: ssl-certs
 
@@ -48,10 +48,11 @@
     when: private_stat.stat.exists
     tags: ssl-certs
 
-  - name: stat certs
+  - name: stat openssl.cnf
     stat: path=/etc/ssl/openssl.cnf
     register: openssl_cnf_stat
     tags: ssl-certs
+    ignore_errors: true
 
   - name: Move openssl.cnf to ssl_backup
     command: mv /etc/ssl/openssl.cnf /etc/ssl/ssl_backup
