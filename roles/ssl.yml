@@ -23,7 +23,7 @@
     when: service_status.stat.exists
     tags: ssl-certs
  
- # Backup the existing ssl certificate folder
+# Backup the existing ssl certificate folder
   - name: Create backup directory
     file: dest=/etc/ssl/ssl_backup state=directory owner=root
     tags: ssl-certs
@@ -59,6 +59,7 @@
     when: openssl_cnf_stat.stat.exists
     tags: ssl-certs
 
+# Extract new ssl certificate
  # - name: copy ssl conf file
  #   template:
  #     src={{ssl_file}}/ssl.conf.j2
